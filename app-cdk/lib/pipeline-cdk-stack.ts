@@ -12,8 +12,7 @@ export class PipelineCdkStack extends Stack {
     const sourceOutput = new codepipeline.Artifact();
     const buildOutput = new codepipeline.Artifact();
     const unitTestOutput = new codepipeline.Artifact();
-    const githubSecret = secretsmanager.Secret.fromSecretNameV2(this, 'GitHubToken', 'github/personal_access_token');
-
+    const githubSecret = secretsmanager.Secret.fromSecretNameV2(this, 'GitHubToken', 'github');
 
 const pipeline = new codepipeline.Pipeline(this,'Pipeline',{
 pipelineName: 'MyPupeline',
@@ -24,7 +23,7 @@ const sourceAction = new codepipelineActions.GitHubSourceAction({
     actionName: 'GitHubSource',
     owner: 'antzelada', 
     repo: 'AWS-CICD-lab',  
-    oauthToken: githubSecret.secretValueFromJson('token-github'), //arn:aws:secretsmanager:us-east-1:623915490714:secret:github-token-AyAWpg
+    oauthToken: githubSecret.secretValueFromJson('github'), 
     output: sourceOutput,
     branch: 'develop', 
   })
