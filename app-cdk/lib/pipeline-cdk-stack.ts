@@ -6,10 +6,12 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 
 
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository,
+  s3Bucket: s3.Bucket,
 }
 
 
@@ -66,6 +68,7 @@ const sourceAction = new codepipelineActions.GitHubSourceAction({
         environmentVariables: {
           IMAGE_TAG: { value: 'latest' },
           IMAGE_REPO_URI: { value: props.ecrRepository.repositoryUri },
+          S3_BUCKET_NAME: { value: props.s3Bucket.bucketName },
           AWS_DEFAULT_REGION: { value: process.env.CDK_DEFAULT_REGION },
         },
         environment: {
@@ -92,6 +95,8 @@ const sourceAction = new codepipelineActions.GitHubSourceAction({
           'ecr:UploadLayerPart',
           'ecr:CompleteLayerUpload',
           'ecr:PutImage',
+          's3:PutObject',
+          's3:PutObjectAcl',
         ],
       });
   
