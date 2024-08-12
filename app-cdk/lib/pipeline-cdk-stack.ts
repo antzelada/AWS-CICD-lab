@@ -14,6 +14,7 @@ interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository,
   s3Bucket: s3.Bucket,
   fargateServiceTest: ecsPatterns.ApplicationLoadBalancedFargateService,
+  fargateServiceProd: ecsPatterns.ApplicationLoadBalancedFargateService,
 }
 
 
@@ -143,6 +144,22 @@ pipeline.addStage({
       input: dockerBuildOutput,
     }),
   ]
+});
+
+pipeline.addStage({
+  stageName: 'Deploy-Production',
+  actions: [
+    new codepipelineActions.ManualApprovalAction({
+      actionName: 'Approve-Deploy-Prod',
+      runOrder: 1,
+    }),
+    new codepipelineActions.EcsDeployAction({
+      actionName: 'Deploy-Fargate-Prod',
+      service: props.fargateServiceProd.service,
+      input: dockerBuildOutput,
+      runOrder: 2,
+    }),
+  ],
 });
 
 

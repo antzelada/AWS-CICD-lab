@@ -13,6 +13,10 @@ const testCdkStack = new AppCdkStack(app, 'test', {
   ecrRepository: ecrCdkStack.repository,
 });
 
+const prodCdkStack = new AppCdkStack(app, 'prod', {
+  ecrRepository: ecrCdkStack.repository,
+});
+
 const s3BucketStack = new cdk.Stack(app, 's3-bucket-stack');
 const s3Bucket = new s3.Bucket(s3BucketStack, 'DockerImageBucket', {
     removalPolicy: cdk.RemovalPolicy.DESTROY, // Adjust as needed
@@ -23,5 +27,6 @@ const pipelineCdkStack = new PipelineCdkStack(app, 'pipeline-stack', {
   ecrRepository: ecrCdkStack.repository,
   s3Bucket: s3Bucket,
   fargateServiceTest: testCdkStack.fargateService,
+  fargateServiceProd: prodCdkStack.fargateService,
 });
   
