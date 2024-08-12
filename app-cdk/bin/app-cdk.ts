@@ -22,5 +22,6 @@ const s3Bucket = new s3.Bucket(s3BucketStack, 'DockerImageBucket', {
 const pipelineCdkStack = new PipelineCdkStack(app, 'pipeline-stack', {
   ecrRepository: ecrCdkStack.repository,
   s3Bucket: s3Bucket,
+  fargateServiceTest: testCdkStack.fargateService,
 });
   
